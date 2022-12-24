@@ -9,14 +9,14 @@ $TenantID= ''
 # Connect to the tenant
 ##
 
-Connect-AzAccount -TenantId $TenantID
+Connect-AzAccount -Tenant $TenantID
 
 ##
 # Create EA
 ##
 
 # Create EA
-$enterpriseApplication = New-AzureADApplication -displayname $EaName
+$enterpriseApplication = New-AzADApplication -displayname $EaName
 
 # Create Secret
 ## IMPORTANT! Copy this value down to use in IntuneConfigPull.ps1, that script currently uses the same variable name 
