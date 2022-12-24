@@ -4,14 +4,19 @@
 
 $sourceOrg = ''
 $targetOrg = ''
-$targetEaName = ''
+$targetEaName = 'IntuneM365DSCtarget'
 $targetTenantID = ''
 $targetEASecret = ''
 
 ##
 # Variables
 ##
-$targetAppID = Get-AzureADApplication -SearchString $targetEaName | Select-Object AppID -ExpandProperty AppID
+$targetEA = Get-AzureADApplication -SearchString $targetEaName
+$targetAppID = $targetEA.AppID
+$targetEASecret = New-AzureADApplicationPasswordCredential -ObjectId $targetEA.ObjectId
+#$targetEASecret = Get-AzureADApplicationKeyCredential -ObjectId $targetEA.ObjectId
+
+
 
 $projectRoot = 'C:\git\M365AutomatedManagement'
 
