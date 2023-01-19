@@ -14,12 +14,8 @@ This installs and updates all the needed modules. The final step prompts you to 
 2) Run the CreateEA.ps1 file to create the EA in your golden tenant
 3) Repeat for any other tenants you intend to manage
 
-# Post-Setup Usage
+# Usage
 
-1) Run the PreReqs.ps1 file to login with your account. This account must have access to the EA in every tenant.
-2) 
+1) Run the PreReqs.ps1 file to get modules installed/updated.
+2) Select an auth method
 
-# Future Development
-
-1) Enable this to run without creating EAs in every tenant
-2) Setup this workflow in Github Actions

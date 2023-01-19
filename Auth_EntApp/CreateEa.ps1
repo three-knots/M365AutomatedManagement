@@ -2,21 +2,25 @@
 # Static Variables
 ##
 
-$EaName = ''
+$EaName = 'Microsoft365DSC'
+$TenantID= ''
+
+##
+# Connect to the tenant
+##
+
+Connect-AzAccount -Tenant $TenantID
 
 ##
 # Create EA
 ##
 
 # Create EA
-$entapp = New-AzureADApplication -displayname $EaName
-
-# Get AppID, TenantID
-#$EA = Get-AzureADApplication -SearchString 'tempEA'
+$enterpriseApplication = New-AzADApplication -displayname $EaName
 
 # Create Secret
 ## IMPORTANT! Copy this value down to use in IntuneConfigPull.ps1, that script currently uses the same variable name 
-$EASecret = New-AzureADApplicationPasswordCredential -objectid $entapp.ObjectId #
+#$EASecret = New-AzureADApplicationPasswordCredential -objectid $entapp.ObjectId #
     # ToDo: Write secret to vault/where ever
 
 ## Get required perms for Ent App.
@@ -34,8 +38,8 @@ foreach ($i in $perms.Update.Permission.name){
     $permsArray += $param
 }
 
-
-
 ## update the perms. Might take a few minutes (or more) for the admin consent to register.
-Update-M365DSCAzureAdApplication -ApplicationName $entapp.DisplayName -Permissions $permsArray -AdminConsent -Type Secret 
+Update-M365DSCAzureAdApplication -ApplicationName $enterpriseApplication.DisplayName -Permissions $permsArray -AdminConsent 
     # ToDo: Should write a test case to validate app settings applied and consents granted. Wrap in do until then out to intuneconfigpull.ps1
+
+

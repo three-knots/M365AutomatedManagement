@@ -11,5 +11,6 @@ Update-M365DSCDependencies
 Uninstall-M365DSCOutdatedDependencies
 
 # There is a vscode bug that causes the login prompt to appear BEHIND your vscode window. Start minimizing things, one by one, until you find it. 
-Connect-AzureAD 
+#Connect-AzureAD 
 
+#Connect-AzureAD -TenantId $context.Tenant.TenantId -AccountId $context.Account.Id
