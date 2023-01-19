@@ -38,8 +38,8 @@ function BuildAZContexts {
     foreach ($ID in $tenantIDs) {
         write-host "connecting to tenant ID: $ID"
         if ($AuthType -eq "EA"){
-            read-host -Prompt "Enter the EA name for tenant ID $ID"
-            read-host -Prompt "Enter the EA password" -maskinput
+            $ApplicationId = read-host -Prompt "Enter the App Registration App ID for tenant $ID"
+            $SecuredPassword = read-host -Prompt "Enter the App Registration secret value (not the secret ID!)" -AsSecureString
             $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $ApplicationId, $SecuredPassword
             Connect-AzAccount -Tenant $ID -ServicePrincipal -Credential $Credential  -ErrorAction Stop
         }
@@ -51,4 +51,5 @@ function BuildAZContexts {
 }
 
     
-
+581207a9-6213-4dcb-b593-8ae26cbb6d62
+bu08Q~~VqGvGnC60YzQwVyH5_K6iUJH0QS4odbmq
