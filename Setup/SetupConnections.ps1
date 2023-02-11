@@ -1,4 +1,5 @@
-
+. $PSScriptRoot\..\HelperFunctions\RetryCommand.ps1
+. $PSScriptRoot\..\HelperFunctions\GuidsToVariable.ps1
 function SetupConnections {
     [CmdletBinding()]
     param (
@@ -37,12 +38,11 @@ function SetupConnections {
         }
         
         $applicationID = $applicationObject.AppId
-        Get-AzADAppCredential -ApplicationId $applicationID
+        GuidsToVariable $context.Tenant.Id $applicationID $applicationSecret #sets global var for use in other functions
+
         $secret = ConvertTo-SecureString -String $applicationSecret -AsPlainText -Force
         $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $applicationID, $secret
-
         RetryCommand -ScriptBlock{Connect-AzAccount -Tenant $context.tenant.id -ServicePrincipal -Credential $Credential -ErrorAction Stop}
-        Save-AzContext -Path .\Contexts\config.json -Force
     }
 
 
@@ -62,41 +62,6 @@ function UpdateApplication{
     Update-M365DSCAzureAdApplication -ApplicationName $applicationDisplayName -Permissions $permsArray -AdminConsent -Type Secret
 }
 
-
-function RetryCommand {
-    [CmdletBinding()]
-    Param(
-        [Parameter(Position=0, Mandatory=$true)]
-        [scriptblock]$ScriptBlock,
-
-        [Parameter(Position=1, Mandatory=$false)]
-        [int]$Maximum = 5,
-
-        [Parameter(Position=2, Mandatory=$false)]
-        [int]$Delay = 10
-    )
-
-    Begin {
-        $cnt = 0
-    }
-
-    Process {
-        do {
-            $cnt++
-            try {
-                $ScriptBlock.Invoke()
-                return
-            } catch {
-                Write-Error $_.Exception.InnerException.Message -ErrorAction Continue
-                Start-Sleep $Delay
-            }
-        } while ($cnt -lt $Maximum)
-
-        throw 'Execution failed.'
-    }
-}
-
-
 ##
 # Lazy Debug
 ##
@@ -111,4 +76,3 @@ Clear-AzContext -PassThru -Force
 SetupConnections -CreateApplication $true
 SetupConnections
 #>
-

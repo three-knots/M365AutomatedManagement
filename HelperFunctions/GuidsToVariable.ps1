@@ -14,6 +14,6 @@ function GuidsToVariable{
     $b = StripCharacters $InputObject2 '-'
 
 
-    if($Value){New-Variable -name $a$b -Scope Global -Value $Value -Visibility Private -Force}
-    else{New-Variable -name $a$b -Scope Global -Visibility Private -Force}
+    if($Value){New-Variable -name $a$b -Scope Global -Value $Value -Force}
+    else{New-Variable -name $a$b -Scope Global -Force}
 }
