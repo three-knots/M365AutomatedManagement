@@ -1,6 +1,6 @@
 . $PSScriptRoot\..\HelperFunctions\CredentialVariableLookup.ps1
 
-function PullConfig {
+function PullConfigs {
      [CmdletBinding()]
      Param(
          [Parameter(Position=0, Mandatory=$false)]
@@ -12,11 +12,15 @@ function PullConfig {
      
      $fileTimeStamp = get-date -Format yyyy-MM-dd_HH-mm-ss
      $exportFileName = $fileTimeStamp+".ps1" 
-     $exportPath = "$PSScriptRoot\..\Outputs\Backups\"
+     $backupsPath = "$PSScriptRoot\..\Outputs\Backups\"
+     $orgName = $context.tenant.id
+     $exportPath = $backupsPath+$orgName
      $credential = CredentialVariableLookUp $context
 
-     Export-M365DSCConfiguration -Path $exportPath -FileName $exportFileName -ApplicationId $context.Account.Id -TenantId $context.Tenant.Id -ApplicationSecret $credential -Components @("IntuneAntivirusPolicyWindows10SettingCatalog","IntuneAppConfigurationPolicy","IntuneApplicationControlPolicyWindows10","IntuneAppProtectionPolicyAndroid","IntuneAppProtectionPolicyiOS","IntuneASRRulesPolicyWindows10","IntuneAttackSurfaceReductionRulesPolicyWindows10ConfigManager","IntuneDeviceAndAppManagementAssignmentFilter","IntuneDeviceCategory","IntuneDeviceCompliancePolicyAndroid","IntuneDeviceCompliancePolicyAndroidDeviceOwner","IntuneDeviceCompliancePolicyAndroidWorkProfile","IntuneDeviceCompliancePolicyiOs","IntuneDeviceCompliancePolicyMacOS","IntuneDeviceCompliancePolicyWindows10","IntuneDeviceConfigurationPolicyAndroidDeviceAdministrator","IntuneDeviceConfigurationPolicyAndroidDeviceOwner","IntuneDeviceConfigurationPolicyAndroidOpenSourceProject","IntuneDeviceConfigurationPolicyAndroidWorkProfile","IntuneDeviceConfigurationPolicyiOS","IntuneDeviceConfigurationPolicyMacOS","IntuneDeviceConfigurationPolicyWindows10","IntuneDeviceEnrollmentLimitRestriction","IntuneDeviceEnrollmentPlatformRestriction","IntuneExploitProtectionPolicyWindows10SettingCatalog","IntuneRoleAssignment","IntuneRoleDefinition","IntuneSettingCatalogASRRulesPolicyWindows10","IntuneWiFiConfigurationPolicyAndroidDeviceAdministrator","IntuneWifiConfigurationPolicyAndroidEntrepriseDeviceOwner","IntuneWifiConfigurationPolicyAndroidEntrepriseWorkProfile","IntuneWifiConfigurationPolicyAndroidForWork","IntuneWifiConfigurationPolicyAndroidOpenSourceProject","IntuneWifiConfigurationPolicyIOS","IntuneWifiConfigurationPolicyMacOS","IntuneWifiConfigurationPolicyWindows10") -ErrorAction Stop 
-     
+     If(!(test-path -PathType container $exportPath)){
+     New-Item -ItemType Directory -Path $exportPath
+     }
+     Export-M365DSCConfiguration -Path $exportPath -FileName $exportFileName -ApplicationId $context.Account.Id -TenantId $context.Tenant.Id -ApplicationSecret $credential -ErrorAction Stop -Workloads INTUNE
  }
      
 # https://export.microsoft365dsc.com/
